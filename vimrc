@@ -12,13 +12,14 @@ Plugin 'scrooloose/syntastic'
 Plugin 'tpope/vim-sleuth'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-scripts/indentpython.vim'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-sensible'
 
 " Color Schemes
-Plugin 'flazz/vimcolorschemes'
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-" plugin on GitHub repo
-Plugin 'tpope/vim-fugitive'
+Plugin 'flazz/vim-colorschemes'
+Plugin 'roosta/vim-srcery'
+Plugin 'notpratheek/vim-luna'
+Plugin 'lifepillar/vim-solarized8'
 
 " plugin from http://vim-scripts.org/vim/scripts.html
 Plugin 'L9'
