@@ -59,3 +59,24 @@ colorscheme molokai
 let python_highlight_all=1
 syntax on
 set nu
+set hidden               " Use hidden buffers
+set ignorecase           " Ignore case when searching...
+set smartcase " ...unless the search is mixed case
+set nostartofline " Don't move to the beginning of a line when jumping
+set shiftwidth=4         " Indent in 4-character wide chunks
+set showcmd " Show commands in the cmd area
+
+
+" Ignore binary files in the standard vim file finder
+set wildignore+=*.pyc,*.obj,*.bin,a.out
+"
+" " <Leader>w to write
+map <silent> <Leader>w :w<CR>
+map <silent> <Leader>W :w!<CR>
+"
+" " <Leader>q to quit
+map <silent> <Leader>q :qall<CR>
+map <silent> <Leader>Q :qall!<CR>
+"
+" " <Leader>c to close a window
+map <silent> <Leader>c :close<CR>
