@@ -66,6 +66,7 @@ set nostartofline " Don't move to the beginning of a line when jumping
 set shiftwidth=4         " Indent in 4-character wide chunks
 set showcmd " Show commands in the cmd area
 set shortmess=a
+set cmdheight=2 " Keep vim from saying 'Press Enter to continue'
 
 " Ignore binary files in the standard vim file finder
 set wildignore+=*.pyc,*.obj,*.bin,a.out
