@@ -6,7 +6,7 @@ Step 1: Install prerequisites:
 sudo apt-get install vim git python-dev python3-dev build-essential cmake
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 ```
-Step 2: Clone this repo with other bundled repositories (includes vundle)
+Step 2: Clone this repo
 ```
 git clone https://github.com/mkijowski/dotfiles.git
 mv dotfiles/.bashrc ~/.bashrc
