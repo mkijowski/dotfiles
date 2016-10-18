@@ -4,14 +4,13 @@ Usage instructions:
 Step 1: Install prerequisites:
 ```
 sudo apt-get install vim git python-dev python3-dev build-essential cmake
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 ```
 Step 2: Clone this repo with other bundled repositories (includes vundle)
 ```
-git clone --recursive https://github.com/mkijowski/dotfiles.git ~/
-```
-note: you may need to update the Vundle repo depending on how long it's been since I've updated this repo
-```
-git submodule update --remote
+git clone https://github.com/mkijowski/dotfiles.git
+mv dotfiles/.bashrc ~/.bashrc
+mv dotfiles/.vimrc ~/.vimrc
 ```
 Step 3: Open vim, ignore errors, install plugins using :PluginInstall
 ```
