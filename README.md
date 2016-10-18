@@ -11,6 +11,9 @@ sudo apt-get install git python-dev python3-dev build-essential cmake
 git clone https://github.com/mkijowski/dotfiles.git ~/
 ```
 # Step 3: Open vim, ignore errors, install plugins using :PluginInstall
+```
+vim -c 'PluginInstall'
+```
 # Step 4: upon completion, exit vim and run the following
 ```
 python ~/.vim/bundle/YouCompleteMe/install.py --clang-completer
