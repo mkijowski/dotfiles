@@ -16,9 +16,9 @@ if [ ! -d $USERDIR/git/dotfiles ]; then
    git clone $DOTFILEREPO
 fi
 
-mv $USERDIR/git/dotfiles/.bashrc $USERDIR/.bashrc
-mv $USERDIR/git/dotfiles/.vimrc $USERDIR/.vimrc
-mv $USERDIR/git/dotfiles/.ssh/* $USERDIR/.ssh
+cp $USERDIR/git/dotfiles/.bashrc $USERDIR/.bashrc
+cp $USERDIR/git/dotfiles/.vimrc $USERDIR/.vimrc
+cp -R $USERDIR/git/dotfiles/.ssh/* $USERDIR/.ssh
 
 #install pre-requisites for vim and environment
 sudo apt update && apt install -y vim \
@@ -32,8 +32,11 @@ sudo apt update && apt install -y vim \
     libarchive-dev \
     squashfs-tools
 
+echo "Finished installing pre-requisites"
 
+install-singularity () {
 cd $USERDIR/git
+git clone https://github.com/mkijowski/container-education.git
 git clone https://github.com/singularityware/singularity.git
 cd singularity
 git fetch --all
@@ -42,15 +45,22 @@ git checkout 2.6.0
 ./configure --prefix=/usr/local --sysconfdir=/etc
 make
 make install
+}
 
 # install plagins for vim
-su mkijowski
-
+echo "Switching to mkijowski"
+configure-mkijowski () {
 sourcery
+echo "Configuring Git"
+echo "$USERDIR"
 git config --global user.email "matthewkijowski@gmail.com"
 git config --global user.name "Matthew Kijowski"
 git config --global core.editor vim
 
+echo "done configuring git"
 git clone https://github.com/VundleVim/Vundle.vim.git $USERDIR/.vim/bundle/Vundle.vim
 vim -c `PluginInstall`
 python $USERDIR/.vim/bundle/YouCompleteMe/install.py --clang-completer
+}
+
+sudo -u mkijowski configure-mkijowski
