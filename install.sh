@@ -1,19 +1,25 @@
 #!/bin/bash
 
+if [ ! -d /home/mkijowski ]; then
+   read -p "Home directory for user mkijowski not found, enter username:" WHOAMI
+else
+   WHOAMI = mkijowski
+fi
+
 sourcery () {
-USERDIR=/home/mkijowski
+USERDIR=/home/$WHOAMI
 DOTFILEREPO=https://github.com/mkijowski/dotfiles
 }
 
 sourcery
 if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 
+   echo "This script must be run as root, exiting." 
    exit 1
 fi
 
 if [ ! -d $USERDIR/git/dotfiles ]; then
-   mkdir -p $USERDIR/git/
-   git clone $DOTFILEREPO
+   echo "Cannot find dotfiles repo @ $USERDIR/git/dotfiles, exiting."
+   exit 1
 fi
 
 cp $USERDIR/git/dotfiles/.bashrc $USERDIR/.bashrc
@@ -49,18 +55,24 @@ make install
 
 # install plagins for vim
 echo "Switching to mkijowski"
-configure-mkijowski () {
+configure-user () {
 sourcery
 echo "Configuring Git"
 echo "$USERDIR"
+
+# Check to make sure its me and exit if not
+read -p "Configuring Git for mkijowski, are you mkijowski? (Y/N): " confirm \
+   && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
+
 git config --global user.email "matthewkijowski@gmail.com"
 git config --global user.name "Matthew Kijowski"
 git config --global core.editor vim
 
 echo "done configuring git"
+
 git clone https://github.com/VundleVim/Vundle.vim.git $USERDIR/.vim/bundle/Vundle.vim
 vim -c `PluginInstall`
 python $USERDIR/.vim/bundle/YouCompleteMe/install.py --clang-completer
 }
 
-sudo -u mkijowski configure-mkijowski
+sudo -u $WHOAMI configure-user
