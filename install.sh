@@ -6,12 +6,9 @@ else
    WHOAMI = mkijowski
 fi
 
-sourcery () {
 USERDIR=/home/$WHOAMI
 DOTFILEREPO=https://github.com/mkijowski/dotfiles
-}
 
-sourcery
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root, exiting." 
    exit 1
@@ -22,12 +19,12 @@ if [ ! -d $USERDIR/git/dotfiles ]; then
    exit 1
 fi
 
-cp $USERDIR/git/dotfiles/.bashrc $USERDIR/.bashrc
-cp $USERDIR/git/dotfiles/.vimrc $USERDIR/.vimrc
-cp -R $USERDIR/git/dotfiles/.ssh/* $USERDIR/.ssh
+su $WHOAMI -c ln -s $USERDIR/git/dotfiles/.bashrc $USERDIR/.bashrc
+su $WHOAMI -c ln -s $USERDIR/git/dotfiles/.vimrc $USERDIR/.vimrc
+su $WHOAMI -c cp -R $USERDIR/git/dotfiles/.ssh/* $USERDIR/.ssh
 
 #install pre-requisites for vim and environment
-sudo apt update && apt install -y vim \
+apt update && apt install -y vim \
     python \
     python-dev \
     python3-dev \
@@ -40,7 +37,7 @@ sudo apt update && apt install -y vim \
 
 echo "Finished installing pre-requisites"
 
-install-singularity () {
+install-singularity2-6 () {
 cd $USERDIR/git
 git clone https://github.com/mkijowski/container-education.git
 git clone https://github.com/singularityware/singularity.git
@@ -53,26 +50,16 @@ make
 make install
 }
 
-# install plagins for vim
-echo "Switching to mkijowski"
-configure-user () {
-sourcery
-echo "Configuring Git"
-echo "$USERDIR"
-
+# install plugins for vim
 # Check to make sure its me and exit if not
 read -p "Configuring Git for mkijowski, are you mkijowski? (Y/N): " confirm \
    && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
 
-git config --global user.email "matthewkijowski@gmail.com"
-git config --global user.name "Matthew Kijowski"
-git config --global core.editor vim
-
-echo "done configuring git"
+su mkijowski -c git config --global user.email "matthewkijowski@gmail.com"
+su mkijowski -c git config --global user.name "Matthew Kijowski"
+su mkijowski -c git config --global core.editor vim
 
 git clone https://github.com/VundleVim/Vundle.vim.git $USERDIR/.vim/bundle/Vundle.vim
 vim -c `PluginInstall`
 python $USERDIR/.vim/bundle/YouCompleteMe/install.py --clang-completer
-}
 
-sudo -u $WHOAMI configure-user
