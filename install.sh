@@ -21,7 +21,7 @@ fi
 
 
 #install pre-requisites for vim and environment
-apt update && apt install -y vim \
+apt update && apt install -y \
    python \
    python-dev \
    python3-dev \
@@ -32,18 +32,15 @@ apt update && apt install -y vim \
    libarchive-dev \
    squashfs-tools \
    libncurses5-dev \
-   libgnome2-dev \
-   libgnomeui-dev \
    libgtk2.0-dev \
    libatk1.0-dev \
-   libbonoboui2-dev \
    libcairo2-dev \
    libx11-dev \
    libxpm-dev \
    libxt-dev \
    ruby-dev \
    lua5.1 \
-   liblua5.1-dev \
+   liblua5.1-0-dev \
    libperl-dev
 
 echo "Finished installing pre-requisites"
@@ -88,8 +85,8 @@ git clone https://github.com/vim/vim.git
 cd vim
 
 ## Check Python 2 config, if you want python 3 support a lot of this needs changed...
-if [ -d /usr/lib/python2.7/config-x86_64-linux-gnu/]; then
-   PYCONF=/usr/lib/python2.7/config-x86_64-linux-gnu/
+if [ -d /usr/lib/python2.7/config-x86_64-linux-gnu ]; then
+   PYCONF=/usr/lib/python2.7/config-x86_64-linux-gnu
 else
    read -p "Standard python 2 config not found ( /usr/lib/python2.7/config-x86_64-linux-gnu/ )
    Please locate python 2 config and enter here: " PYCONF \
