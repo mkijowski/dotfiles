@@ -55,6 +55,7 @@ home_config() {
    ln -sfb ~/git/dotfiles/.bashrc ~/.bashrc
    ln -sfb ~/git/dotfiles/.vimrc ~/.vimrc
    mkdir -p ~/.ssh/
+   mkdir -p ~/.singularity/
    ln -sfb ~/git/dotfiles/.ssh/authorized_keys ~/.ssh/authorized_keys
    ln -sfb ~/git/dotfiles/.ssh/config ~/.ssh/config
 }
