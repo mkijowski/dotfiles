@@ -97,13 +97,13 @@ fi
             --enable-multibyte \
 	    --enable-rubyinterp=yes \
 	    --enable-pythoninterp=yes \
-	    --with-python-config-dir=$PYCONF \ 
 	    --enable-python3interp=yes \
 	    --enable-perlinterp=yes \
 	    --enable-luainterp=yes \
             --enable-gui=gtk2 \
             --enable-cscope \
-	    --prefix=/usr/local
+	    --prefix=/usr/local \
+	    --with-python-config-dir=$PYCONF
 
 make VIMRUNTIMEDIR=/usr/local/share/vim/vim81
 make install
