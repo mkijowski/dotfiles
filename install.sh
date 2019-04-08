@@ -48,33 +48,38 @@ echo "Finished installing pre-requisites"
 # install plugins for vim
 # Check to make sure its me and exit if not
 read -p "Configuring Git for mkijowski, are you mkijowski? (Y/N): " confirm \
-   && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
+  && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
 
 
 home_config() {
-   ln -sfb ~/git/dotfiles/.bashrc ~/.bashrc
-   ln -sfb ~/git/dotfiles/.vimrc ~/.vimrc
-   mkdir -p ~/.ssh/
-   mkdir -p ~/.singularity/
-   ln -sfb ~/git/dotfiles/.ssh/authorized_keys ~/.ssh/authorized_keys
-   ln -sfb ~/git/dotfiles/.ssh/config ~/.ssh/config
+  ln -sfb ~/git/dotfiles/.bashrc ~/.bashrc
+  ln -sfb ~/git/dotfiles/.vimrc ~/.vimrc
+  mkdir -p ~/.ssh/
+  mkdir -p ~/.singularity/
+  ln -sfb ~/git/dotfiles/.ssh/authorized_keys ~/.ssh/authorized_keys
+  ln -sfb ~/git/dotfiles/.ssh/config ~/.ssh/config
 }
 export -f home_config
 
 git_config() {
-
-   git config --global user.email "matthewkijowski@gmail.com"
-   git config --global user.name "Matthew Kijowski"
-   git config --global core.editor vim
+  git config --global user.email "matthewkijowski@gmail.com"
+  git config --global user.name "Matthew Kijowski"
+  git config --global core.editor vim
 }
 export -f git_config
 
+# Old vim configuration
+old_vim_config() {
+  if [ -d ~/.vim/bundle/Vundle.vim ]; then
+    rm -rf ~/.vim/bundle/Vundle.vim
+  fi
+  git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+  vim -c PluginInstall
+}
+
+# Spacevim install
 vim_config() {
-   if [ -d ~/.vim/bundle/Vundle.vim ]; then
-      rm -rf ~/.vim/bundle/Vundle.vim
-   fi
-   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-   vim -c PluginInstall
+  curl -sLf https://spacevim.org/install.sh | bash
 }
 export -f vim_config
 
@@ -87,24 +92,24 @@ cd vim
 
 ## Check Python 2 config, if you want python 3 support a lot of this needs changed...
 if [ -d /usr/lib/python2.7/config-x86_64-linux-gnu ]; then
-   PYCONF=/usr/lib/python2.7/config-x86_64-linux-gnu
+  PYCONF=/usr/lib/python2.7/config-x86_64-linux-gnu
 else
-   read -p "Standard python 2 config not found ( /usr/lib/python2.7/config-x86_64-linux-gnu/ )
-   Please locate python 2 config and enter here: " PYCONF \
-      && [ -d $PYCONF ] || (echo "$PYCONF not found, exiting." && exit 1)
+  read -p "Standard python 2 config not found ( /usr/lib/python2.7/config-x86_64-linux-gnu/ )
+  Please locate python 2 config and enter here: " PYCONF \
+    && [ -d $PYCONF ] || (echo "$PYCONF not found, exiting." && exit 1)
 fi
 
 ./configure --with-features=huge \
-            --enable-multibyte \
-	    --enable-rubyinterp=yes \
-	    --enable-pythoninterp=yes \
-	    --enable-python3interp=yes \
-	    --enable-perlinterp=yes \
-	    --enable-luainterp=yes \
-            --enable-gui=gtk2 \
-            --enable-cscope \
-	    --prefix=/usr/local \
-	    --with-python-config-dir=$PYCONF
+  --enable-multibyte \
+  --enable-rubyinterp=yes \
+  --enable-pythoninterp=yes \
+  --enable-python3interp=yes \
+  --enable-perlinterp=yes \
+  --enable-luainterp=yes \
+  --enable-gui=gtk2 \
+  --enable-cscope \
+  --prefix=/usr/local \
+  --with-python-config-dir=$PYCONF
 
 make VIMRUNTIMEDIR=/usr/local/share/vim/vim81
 make install
@@ -115,20 +120,21 @@ update-alternatives --set vi /usr/local/bin/vim
 }
 
 
+
 su $WHOAMI -c "bash -c home_config $USERDIR"
 su $WHOAMI -c " bash -c git_config"
 
 
 read -p \
-   "Autocomplete (Valloric YouCompleteMe) requires vim to be compiled with
-   python support.  Would you like to uninstall vim and recompile?
-   (Y/N): " vimconfirm
+  "Most fancy vim plugins require vim to be compiled with
+  python support.  Would you like to uninstall vim and recompile?
+  (Y/N): " vimconfirm
 
 if [[ $vimconfirm == [yY] || $vimconfirm == [yY][eE][sS] ]]; then
-   vim_from_src
-   su $WHOAMI -c "bash -c vim_config $USERDIR"
-   python $USERDIR/.vim/bundle/YouCompleteMe/install.py --clang-completer
+  vim_from_src
+  su $WHOAMI -c "bash -c vim_config $USERDIR"
+  #python $USERDIR/.vim/bundle/YouCompleteMe/install.py --clang-completer
 else
-   su $WHOAMI -c "bash -c vim_config $USERDIR"
+  su $WHOAMI -c "bash -c vim_config $USERDIR"
 fi
 
