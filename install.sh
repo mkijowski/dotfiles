@@ -69,7 +69,7 @@ git_config() {
 export -f git_config
 
 # Old vim configuration
-old_vim_config() {
+vim_config() {
   if [ -d ~/.vim/bundle/Vundle.vim ]; then
     rm -rf ~/.vim/bundle/Vundle.vim
   fi
@@ -78,7 +78,7 @@ old_vim_config() {
 }
 
 # Spacevim install
-vim_config() {
+space_vim_config() {
   curl -sLf https://spacevim.org/install.sh | bash
 }
 export -f vim_config
@@ -91,10 +91,10 @@ git clone https://github.com/vim/vim.git
 cd vim
 
 ## Check Python 2 config, if you want python 3 support a lot of this needs changed...
-if [ -d /usr/lib/python2.7/config-x86_64-linux-gnu ]; then
-  PYCONF=/usr/lib/python2.7/config-x86_64-linux-gnu
+if [ -d /usr/lib/python3.5/config-3.5m-x86_64-linux-gnu/ ]; then
+  PYCONF=/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu
 else
-  read -p "Standard python 2 config not found ( /usr/lib/python2.7/config-x86_64-linux-gnu/ )
+  read -p "Standard python 2 config not found ( /usr/lib/python3.5/config-3.5m-x86_64-linux-gnu/ )
   Please locate python 2 config and enter here: " PYCONF \
     && [ -d $PYCONF ] || (echo "$PYCONF not found, exiting." && exit 1)
 fi

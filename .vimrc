@@ -84,3 +84,8 @@ map <silent> <Leader>Q :qall!<CR>
 "
 " " <Leader>c to close a window
 map <silent> <Leader>c :close<CR>
+
+map <silent> <Leader>Wq :wq<CR>
+
+au BufRead,BufNewFile *.md setlocal textwidth=80
+set wrap!
