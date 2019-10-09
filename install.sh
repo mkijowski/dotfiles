@@ -41,9 +41,39 @@ apt update && apt install -y \
    ruby-dev \
    lua5.1 \
    liblua5.1-0-dev \
-   libperl-dev
+   libperl-dev \
+   uuid-dev \
+   libssl-dev \
+   libgpgme11-dev \
+   libseccomp-dev \
+   pkg-config
 
 echo "Finished installing pre-requisites"
+
+singularity_install() {
+echo "Installing Go"
+export VERSION=1.13.1 OS=linux ARCH=amd64 && \
+    wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz && \
+    sudo tar -C /usr/local -xzvf go$VERSION.$OS-$ARCH.tar.gz && \
+    rm go$VERSION.$OS-$ARCH.tar.gz
+
+echo 'export GOPATH=${HOME}/go' >> ~/.bashrc && \
+    echo 'export PATH=/usr/local/go/bin:${PATH}:${GOPATH}/bin' >> ~/.bashrc && \
+    source ~/.bashrc
+
+/usr/local/go/bin/go get -u github.com/golang/dep/cmd/dep
+/usr/local/go/bin/go get -d github.com/sylabs/singularity
+
+export VERSION=v3.4.1 && \
+    mkdir -p $GOPATH/src/github.com/sylabs && \
+    cd $GOPATH/src/github.com/sylabs && \
+    wget https://github.com/sylabs/singularity/releases/download/v$VERSION/singularity-$VERSION.tar.gz && \
+    tar -xzf singularity-$VERSION.tar.gz && \
+    cd ./singularity && \
+    ./mconfig && \
+    make -C ./builddir && \
+    make -C ./builddir install
+}
 
 # install plugins for vim
 # Check to make sure its me and exit if not
@@ -76,6 +106,8 @@ vim_config() {
   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
   vim -c PluginInstall
 }
+
+
 
 # Spacevim install
 space_vim_config() {
