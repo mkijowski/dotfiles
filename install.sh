@@ -105,6 +105,7 @@ vim_config() {
   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
   vim -c PluginInstall
 }
+export -f vim_config
 
 # vim needs to be compiled with python support for autocomplete to work
 vim_from_src() {
@@ -143,10 +144,12 @@ update-alternatives --set vi /usr/local/bin/vim
 
 cd ..
 rm -rf ./vim
+  
 }
 
 su -m $WHOAMI -c "bash -c home_config $USERDIR"
 su -m $WHOAMI -c "bash -c git_config"
+su -m $WHOAMI -c "bash -c vim_config"
 
 read -p \
   "Most fancy vim plugins require vim to be compiled with
