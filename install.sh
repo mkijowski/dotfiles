@@ -46,7 +46,9 @@ apt update && apt install -y \
    libssl-dev \
    libgpgme11-dev \
    libseccomp-dev \
-   pkg-config
+   pkg-config \
+   wget \
+   cryptsetup
 
 echo "Finished installing pre-requisites"
 
@@ -57,17 +59,14 @@ export VERSION=1.13.1 OS=linux ARCH=amd64 && \
     sudo tar -C /usr/local -xzvf go$VERSION.$OS-$ARCH.tar.gz && \
     rm go$VERSION.$OS-$ARCH.tar.gz
 
+echo '
+' >> ~/.bashrc
 echo 'export GOPATH=${HOME}/go' >> ~/.bashrc && \
     echo 'export PATH=/usr/local/go/bin:${PATH}:${GOPATH}/bin' >> ~/.bashrc && \
     source ~/.bashrc
 
-/usr/local/go/bin/go get -u github.com/golang/dep/cmd/dep
-/usr/local/go/bin/go get -d github.com/sylabs/singularity
-
-export VERSION=v3.4.1 && \
-    mkdir -p $GOPATH/src/github.com/sylabs && \
-    cd $GOPATH/src/github.com/sylabs && \
-    wget https://github.com/sylabs/singularity/releases/download/v$VERSION/singularity-$VERSION.tar.gz && \
+export VERSION=v3.6.3 && \
+    wget https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz && \
     tar -xzf singularity-$VERSION.tar.gz && \
     cd ./singularity && \
     ./mconfig && \
@@ -107,26 +106,18 @@ vim_config() {
   vim -c PluginInstall
 }
 
-
-
-# Spacevim install
-space_vim_config() {
-  curl -sLf https://spacevim.org/install.sh | bash
-}
-export -f vim_config
-
 # vim needs to be compiled with python support for autocomplete to work
 vim_from_src() {
-apt remove vim vim-runtime gvim
+apt remove vim vim-runtime gvim && \
 cd ~
 git clone https://github.com/vim/vim.git
 cd vim
 
 ## Check Python 2 config, if you want python 3 support a lot of this needs changed...
-if [ -d /usr/lib/python3.5/config-3.5m-x86_64-linux-gnu/ ]; then
-  PYCONF=/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu
+if [ -d /usr/lib/python3.6/config-3.6m-x86_64-linux-gnu/ ]; then
+  PYCONF=/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu
 else
-  read -p "Standard python 2 config not found ( /usr/lib/python3.5/config-3.5m-x86_64-linux-gnu/ )
+  read -p "Standard python 2 config not found ( /usr/lib/python3.6/config-3.6m-x86_64-linux-gnu/ )
   Please locate python 2 config and enter here: " PYCONF \
     && [ -d $PYCONF ] || (echo "$PYCONF not found, exiting." && exit 1)
 fi
@@ -143,19 +134,19 @@ fi
   --prefix=/usr/local \
   --with-python-config-dir=$PYCONF
 
-make VIMRUNTIMEDIR=/usr/local/share/vim/vim81
+make VIMRUNTIMEDIR=/usr/local/share/vim/vim82
 make install
 update-alternatives --install /usr/bin/editor editor /usr/local/bin/vim 1
 update-alternatives --set editor /usr/local/bin/vim
 update-alternatives --install /usr/bin/vi vi /usr/local/bin/vim 1
 update-alternatives --set vi /usr/local/bin/vim
+
+cd ..
+rm -rf ./vim
 }
 
-
-
-su $WHOAMI -c "bash -c home_config $USERDIR"
-su $WHOAMI -c " bash -c git_config"
-
+su -m $WHOAMI -c "bash -c home_config $USERDIR"
+su -m $WHOAMI -c "bash -c git_config"
 
 read -p \
   "Most fancy vim plugins require vim to be compiled with
@@ -164,9 +155,9 @@ read -p \
 
 if [[ $vimconfirm == [yY] || $vimconfirm == [yY][eE][sS] ]]; then
   vim_from_src
-  su $WHOAMI -c "bash -c vim_config $USERDIR"
+  su -m $WHOAMI -c "bash -c vim_config $USERDIR"
   #python $USERDIR/.vim/bundle/YouCompleteMe/install.py --clang-completer
 else
-  su $WHOAMI -c "bash -c vim_config $USERDIR"
+  su -m $WHOAMI -c "bash -c vim_config $USERDIR"
 fi
 
