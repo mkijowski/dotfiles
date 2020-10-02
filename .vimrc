@@ -7,7 +7,7 @@ filetype off                  " required
  "call vundle#begin('~/some/path/here')
 
 Plugin 'VundleVim/Vundle.vim'
-"Plugin 'Valloric/YouCompleteMe'
+Plugin 'Valloric/YouCompleteMe'
 Plugin 'scrooloose/syntastic'
 Plugin 'tpope/vim-sleuth'
 Plugin 'tpope/vim-surround'

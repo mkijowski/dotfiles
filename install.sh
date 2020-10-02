@@ -19,7 +19,7 @@ if [ ! -d $USERDIR/git/dotfiles ]; then
    exit 1
 fi
 
-
+install_dependencies() {
 #install pre-requisites for vim and environment
 apt update && apt install -y \
    python \
@@ -51,34 +51,27 @@ apt update && apt install -y \
    cryptsetup
 
 echo "Finished installing pre-requisites"
+}
 
 singularity_install() {
 echo "Installing Go"
-export VERSION=1.13.1 OS=linux ARCH=amd64 && \
+export VERSION=1.15.2 OS=linux ARCH=amd64 && \
     wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz && \
     sudo tar -C /usr/local -xzvf go$VERSION.$OS-$ARCH.tar.gz && \
     rm go$VERSION.$OS-$ARCH.tar.gz
-
-echo '
-' >> ~/.bashrc
-echo 'export GOPATH=${HOME}/go' >> ~/.bashrc && \
-    echo 'export PATH=/usr/local/go/bin:${PATH}:${GOPATH}/bin' >> ~/.bashrc && \
-    source ~/.bashrc
+    export PATH=/usr/local/go/bin:${PATH}:${GOPATH}/bin
 
 export VERSION=3.6.3 && \
     wget https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz && \
     tar -xzf singularity-$VERSION.tar.gz && \
+    rm singularity-$VERSION.tar.gz && \
     cd ./singularity && \
     ./mconfig && \
     make -C ./builddir && \
     make -C ./builddir install
+    cd ~
+    rm -rf ./singularity
 }
-
-# install plugins for vim
-# Check to make sure its me and exit if not
-read -p "Configuring Git for mkijowski, are you mkijowski? (Y/N): " confirm \
-  && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
-
 
 home_config() {
   ln -sfb ~/git/dotfiles/.bashrc ~/.bashrc
@@ -97,19 +90,21 @@ git_config() {
 }
 export -f git_config
 
-# Old vim configuration
+# vim configuration
 vim_config() {
   if [ -d ~/.vim/bundle/Vundle.vim ]; then
     rm -rf ~/.vim/bundle/Vundle.vim
   fi
   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-  vim -c PluginInstall
+  if [ -f ~/.vimrc ]; then
+    vim -C PluginInstall
+  fi
 }
 export -f vim_config
 
 # vim needs to be compiled with python support for autocomplete to work
 vim_from_src() {
-apt remove vim vim-runtime gvim && \
+apt remove -y vim vim-runtime gvim && \
 cd ~
 git clone https://github.com/vim/vim.git
 cd vim
@@ -144,13 +139,23 @@ update-alternatives --set vi /usr/local/bin/vim
 
 cd ..
 rm -rf ./vim
-  
 }
 
-su -m $WHOAMI -c "bash -c home_config $USERDIR"
-su -m $WHOAMI -c "bash -c git_config"
-su -m $WHOAMI -c "bash -c vim_config"
+## Install dependencies?
+read -p \
+  "Install system dependencies? (Y/N): " depconfirm
+if [[ $depconfirm == [yY] || $depconfirm == [yY][eE][sS] ]]; then
+  install_dependencies
+fi
 
+## Install singularity?
+read -p \
+  "Install Singularity container software? (Y/N): " singconfirm
+if [[ $singconfirm == [yY] || $singconfirm == [yY][eE][sS] ]]; then
+  singularity_install
+fi
+
+## Compile Vim from source?
 read -p \
   "Most fancy vim plugins require vim to be compiled with
   python support.  Would you like to uninstall vim and recompile?
@@ -158,9 +163,20 @@ read -p \
 
 if [[ $vimconfirm == [yY] || $vimconfirm == [yY][eE][sS] ]]; then
   vim_from_src
-  su -m $WHOAMI -c "bash -c vim_config $USERDIR"
-  #python $USERDIR/.vim/bundle/YouCompleteMe/install.py --clang-completer
+  su -m $WHOAMI -c "bash -c vim_config"
+  su -m $WHOAMI -c "python $USERDIR/.vim/bundle/YouCompleteMe/install.py --clang-completer"
 else
-  su -m $WHOAMI -c "bash -c vim_config $USERDIR"
+  su -m $WHOAMI -c "bash -c vim_config"
+  su -m $WHOAMI -c "python $USERDIR/.vim/bundle/YouCompleteMe/install.py --clang-completer"
 fi
+
+## Configure system for mkijowski
+read -p \
+  "Would you like to configure this system for mkijowski? (Y/N): " mkconfirm
+if [[ $mkconfirm == [yY] || $mkconfirm == [yY][eE][sS] ]]; then
+  su -m $WHOAMI -c "bash -c home_config $USERDIR"
+  su -m $WHOAMI -c "bash -c git_config"
+  su -m $WHOAMI -c "bash -c vim_config"
+fi
+
 
