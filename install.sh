@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Kijowski test comment
+
 if [ ! -d /home/mkijowski ]; then
    read -p "Home directory for user mkijowski not found, enter username:" WHOAMI
 else
