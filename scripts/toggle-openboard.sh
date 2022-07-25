@@ -1,4 +1,9 @@
 #!/bin/bash
+#####
+#
+# thanks https://github.com/CodingPenguin1
+#
+#####
 
 RUNNING="`/usr/bin/ps -aux | grep 'openboard$' | grep -v 'bwrap' | grep -v 'grep'`"
 
