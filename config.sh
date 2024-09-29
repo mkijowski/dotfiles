@@ -16,7 +16,8 @@ if [ ! -d $USERDIR/git/dotfiles ]; then
 fi
 
 home_config() {
-  ln -sfb ~/git/dotfiles/.bashrc ~/.bashrc
+  #ln -sfb ~/git/dotfiles/.bashrc ~/.bashrc ## will now default to system bashrc and use aliases file below
+  ln -sfb ~/git/dotfiles/.bash_aliases ~/.bash_aliases
   ln -sfb ~/git/dotfiles/.vimrc ~/.vimrc
   mkdir -p ~/.ssh/
   mkdir -p ~/.singularity/

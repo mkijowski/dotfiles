@@ -105,14 +105,8 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-alias gitgraph="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
 
              
-alias vtkpy="singularity exec ~/.singularity/vtk.simg python"
-alias ghidra="singularity exec ~/.singularity/r2ghidra.sif ghidra"
-alias r2="singularity exec ~/.singularity/r2ghidra.sif r2"
-alias avrdude="singularity exec ~/.singularity/avrdude.sif avrdude"
-alias qmk="singularity exec ~/.singularity/avrdude.sif qmk"
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
