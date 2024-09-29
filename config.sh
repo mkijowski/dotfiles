@@ -8,6 +8,7 @@ fi
 
 USERDIR=/home/$WHOAMI
 DOTFILEREPO=https://github.com/mkijowski/dotfiles
+PRIVATEKEY=$USERDIR/Downloads/kijowski-secret.txt
 
 if [ ! -d $USERDIR/git/dotfiles ]; then
    echo "Cannot find dotfiles repo @ $USERDIR/git/dotfiles, exiting."
@@ -42,6 +43,16 @@ vim_config() {
 }
 export -f vim_config
 
+gpg_config() {
+  if [ ! -f $PRIVATEKEY ]; then
+    echo "Cannot find Private Key (lastpass download)"
+    exit 1
+  fi
+  gpg --import $PRIVATEKEY
+  expect -c 'spawn gpg --edit-key 7E5CF54E1BBA3984 trust quit; send "5\ry\r"; expect eof'
+}
+export -f gpg_config
+
 ## Configure system for mkijowski
 read -p \
   "Would you like to configure this system for mkijowski? (Y/N): " mkconfirm
@@ -50,3 +61,4 @@ if [[ $mkconfirm == [yY] || $mkconfirm == [yY][eE][sS] ]]; then
   git_config
   vim_config
 fi
+

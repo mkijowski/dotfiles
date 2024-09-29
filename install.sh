@@ -48,7 +48,9 @@ apt update && apt install -y \
    libseccomp-dev \
    pkg-config \
    wget \
-   cryptsetup
+   cryptsetup \
+   expect \
+   gpg
 
 echo "Finished installing pre-requisites"
 }
