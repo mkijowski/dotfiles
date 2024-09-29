@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Kijowski test comment
-
 if [ ! -d /home/mkijowski ]; then
    read -p "Home directory for user mkijowski not found, enter username:" WHOAMI
 else
@@ -57,13 +55,14 @@ echo "Finished installing pre-requisites"
 
 singularity_install() {
 echo "Installing Go"
-export VERSION=1.15.2 OS=linux ARCH=amd64 && \
+export VERSION=1.22.6 OS=linux ARCH=amd64 && \
     wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz && \
     sudo tar -C /usr/local -xzvf go$VERSION.$OS-$ARCH.tar.gz && \
     rm go$VERSION.$OS-$ARCH.tar.gz
     export PATH=/usr/local/go/bin:${PATH}:${GOPATH}/bin
+    source ~/.bashrc
 
-export VERSION=3.6.3 && \
+export VERSION=4.2.0 && \
     wget https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz && \
     tar -xzf singularity-$VERSION.tar.gz && \
     rm singularity-$VERSION.tar.gz && \
@@ -74,35 +73,6 @@ export VERSION=3.6.3 && \
     cd ~
     rm -rf ./singularity
 }
-
-home_config() {
-  ln -sfb ~/git/dotfiles/.bashrc ~/.bashrc
-  ln -sfb ~/git/dotfiles/.vimrc ~/.vimrc
-  mkdir -p ~/.ssh/
-  mkdir -p ~/.singularity/
-  ln -sfb ~/git/dotfiles/.ssh/authorized_keys ~/.ssh/authorized_keys
-  ln -sfb ~/git/dotfiles/.ssh/config ~/.ssh/config
-}
-export -f home_config
-
-git_config() {
-  git config --global user.email "matthewkijowski@gmail.com"
-  git config --global user.name "Matthew Kijowski"
-  git config --global core.editor vim
-}
-export -f git_config
-
-# vim configuration
-vim_config() {
-  if [ -d ~/.vim/bundle/Vundle.vim ]; then
-    rm -rf ~/.vim/bundle/Vundle.vim
-  fi
-  git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-  if [ -f ~/.vimrc ]; then
-    vim -C PluginInstall
-  fi
-}
-export -f vim_config
 
 # vim needs to be compiled with python support for autocomplete to work
 vim_from_src() {
@@ -171,14 +141,4 @@ else
   su -m $WHOAMI -c "bash -c vim_config"
   su -m $WHOAMI -c "python $USERDIR/.vim/bundle/YouCompleteMe/install.py --clang-completer"
 fi
-
-## Configure system for mkijowski
-read -p \
-  "Would you like to configure this system for mkijowski? (Y/N): " mkconfirm
-if [[ $mkconfirm == [yY] || $mkconfirm == [yY][eE][sS] ]]; then
-  su -m $WHOAMI -c "bash -c home_config $USERDIR"
-  su -m $WHOAMI -c "bash -c git_config"
-  su -m $WHOAMI -c "bash -c vim_config"
-fi
-
 
