@@ -15,8 +15,12 @@ alias ggpg="gpg --no-default-keyring --keyring s26-ceg3400.gpg"
 #   && gunzip /usr/share/wordlists/rockyou.tgz \
 #   && mkdir  /usr/share/wordlists/xpspecial && wget xpspecial (~6GB!)
 alias kali="singularity shell $CONTAINERS/kali.sif"
+alias kali2="singularity exec $CONTAINERS/kali.sif"
 alias john="singularity exec $CONTAINERS/kali.sif john"
 alias binwalk="singularity exec $CONTAINERS/kali.sif binwalk"
 
 # singularity build $CONTAINERS/volatility2.sif docker://oste/volatility2:amd64
 alias vol2="singularity exec $CONTAINERS/volatility2.sif python2 /opt/volatility/vol.py"
+
+#singularity build $CONTAINERS/volatility3.sif docker://sk4la/volatility3
+alias vol3="singularity exec $CONTAINERS/volatility3.sif volatility3"
